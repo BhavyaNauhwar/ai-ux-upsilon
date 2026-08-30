@@ -1,0 +1,163 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+
+:root {
+  --radius: 0.5rem;
+  --background: oklch(1 0 0);              /* #FFFFFF main */
+  --foreground: oklch(0.219 0 0);          /* #222222 */
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.219 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.219 0 0);
+  --primary: oklch(0.145 0 0);
+  --primary-foreground: oklch(1 0 0);
+  --muted: oklch(0.972 0 0);               /* #F7F7F8 sidebar */
+  --muted-foreground: oklch(0.5 0 0);
+  --border: oklch(0.93 0 0);
+  --input: oklch(0.93 0 0);
+  --ring: oklch(0.219 0 0);
+}
+
+/* Dark theme tokens — applied when <html class="dark"> is set by AppearanceProvider */
+.dark {
+  --background: oklch(0.16 0 0);
+  --foreground: oklch(0.96 0 0);
+  --card: oklch(0.19 0 0);
+  --card-foreground: oklch(0.96 0 0);
+  --popover: oklch(0.19 0 0);
+  --popover-foreground: oklch(0.96 0 0);
+  --primary: oklch(0.96 0 0);
+  --primary-foreground: oklch(0.16 0 0);
+  --muted: oklch(0.22 0 0);
+  --muted-foreground: oklch(0.72 0 0);
+  --border: oklch(0.3 0 0);
+  --input: oklch(0.3 0 0);
+  --ring: oklch(0.72 0 0);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+  html, body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+/* ---- Polished UI tokens & utilities ---------------------------------- */
+
+@utility surface-hover {
+  background-color: color-mix(in oklab, var(--color-foreground) 6%, transparent);
+}
+
+@utility surface-active {
+  background-color: color-mix(in oklab, var(--color-foreground) 9%, transparent);
+}
+
+@utility ring-focus {
+  outline: none;
+  box-shadow: 0 0 0 2px color-mix(in oklab, var(--color-foreground) 14%, transparent);
+}
+
+/* Custom scrollbar — thin, minimal */
+.scroll-thin {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklab, var(--color-foreground) 18%, transparent) transparent;
+}
+.scroll-thin::-webkit-scrollbar { width: 8px; height: 8px; }
+.scroll-thin::-webkit-scrollbar-thumb {
+  background: color-mix(in oklab, var(--color-foreground) 14%, transparent);
+  border-radius: 999px;
+}
+.scroll-thin::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in oklab, var(--color-foreground) 24%, transparent);
+}
+.scroll-thin::-webkit-scrollbar-track { background: transparent; }
+
+/* Typing dots — subtle monochrome breathing */
+@keyframes lm-dot {
+  0%, 100% { transform: translateY(0); opacity: 0.28; }
+  50%      { transform: translateY(-1.5px); opacity: 0.95; }
+}
+.lm-dot {
+  animation: lm-dot 1.4s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  will-change: transform, opacity;
+}
+
+/* Message enter */
+@keyframes lm-msg-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.lm-msg-in { animation: lm-msg-in 220ms cubic-bezier(.2,.7,.2,1) both; }
+
+/* Streaming caret — smooth pulse */
+@keyframes lm-caret {
+  0%, 100% { opacity: 0.15; }
+  50%      { opacity: 1; }
+}
+.lm-caret {
+  display: inline-block; width: 6px; height: 1em;
+  background: currentColor; vertical-align: -2px; margin-left: 2px;
+  animation: lm-caret 1.1s ease-in-out infinite; border-radius: 1px;
+}
+
+
+/* ---- Appearance: Compact mode ---------------------------------------- */
+/* Reduces spacing subtly without changing typography, colors, or layout. */
+.compact .p-4 { padding: 0.75rem; }
+.compact .p-5 { padding: 0.9rem; }
+.compact .p-6 { padding: 1rem; }
+.compact .px-4 { padding-left: 0.75rem; padding-right: 0.75rem; }
+.compact .py-4 { padding-top: 0.6rem; padding-bottom: 0.6rem; }
+.compact .py-3 { padding-top: 0.45rem; padding-bottom: 0.45rem; }
+.compact .py-2 { padding-top: 0.35rem; padding-bottom: 0.35rem; }
+.compact .gap-4 { gap: 0.7rem; }
+.compact .gap-3 { gap: 0.55rem; }
+.compact .gap-2 { gap: 0.4rem; }
+.compact .space-y-6 > * + * { margin-top: 1rem; }
+.compact .space-y-5 > * + * { margin-top: 0.85rem; }
+.compact .space-y-4 > * + * { margin-top: 0.7rem; }
+.compact .space-y-3 > * + * { margin-top: 0.5rem; }
+.compact .space-y-2 > * + * { margin-top: 0.35rem; }
+
+/* ---- Appearance: Reduced motion -------------------------------------- */
+.reduced-motion *,
+.reduced-motion *::before,
+.reduced-motion *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
+}
+.reduced-motion .lm-msg-in,
+.reduced-motion .lm-dot,
+.reduced-motion .lm-caret {
+  animation: none !important;
+}
