@@ -68,8 +68,8 @@ The app supports file and media attachments, including image and PDF handling wh
 ### 1. Clone the repository
 
 ```bash
-git clone <your-repository-url>
-cd <project-folder>
+git clone https://github.com/BhavyaNauhwar/ai-ux-upsilon.git
+cd ai-ux-upsilon
 ```
 
 ### 2. Install dependencies
