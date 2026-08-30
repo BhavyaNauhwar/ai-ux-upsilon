@@ -1,4 +1,4 @@
-# Upsilon AI
+# Upsilon AI (AI Chatbot UX)
 
 Upsilon AI is an open-source, full-stack AI chatbot application designed for modern conversational work and configurable backend integrations. It combines a polished chat interface with authentication, persistent history, long-term memory, attachments, and a flexible AI backend architecture that can be adapted to a developer's deployment.
 
