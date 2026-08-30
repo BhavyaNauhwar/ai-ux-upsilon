@@ -249,31 +249,41 @@ function Index() {
     let active = true;
 
     const restoreSession = async () => {
-      const {
-        data: { session },
-      } = await supabase!.auth.getSession();
-      if (!active) return;
-      const userObj = session?.user ? { id: session.user.id, email: session.user.email ?? null } : null;
-      sessionUserRef.current = userObj;
-      setSessionUser(userObj);
+      try {
+        const {
+          data: { session },
+        } = await supabase!.auth.getSession();
+        if (!active) return;
+        const userObj = session?.user ? { id: session.user.id, email: session.user.email ?? null } : null;
+        sessionUserRef.current = userObj;
+        setSessionUser(userObj);
 
-      if (session?.user) {
-        const remoteChats = await loadChatsForUser(session.user.id);
-        const paidStatus = await getUserPaidStatus(session.user.id);
-        if (active) {
-          if (remoteChats !== null) {
-            setChats(remoteChats);
-            remoteChatsLoadedRef.current = true;
+        if (session?.user) {
+          const remoteChats = await loadChatsForUser(session.user.id);
+          const paidStatus = await getUserPaidStatus(session.user.id);
+          if (active) {
+            if (remoteChats !== null) {
+              setChats(remoteChats);
+              remoteChatsLoadedRef.current = true;
+            }
+            setIsPaid(paidStatus);
+            setSupabaseReady(true);
           }
-          setIsPaid(paidStatus);
-          setSupabaseReady(true);
+        } else {
+          const stored = readStoredChats();
+          if (active) {
+            setChats(stored);
+            setIsPaid(false);
+            remoteChatsLoadedRef.current = false;
+            setSupabaseReady(true);
+          }
         }
-      } else {
-        const stored = readStoredChats();
+      } catch (error) {
+        console.error("Session restore failed during startup initialization", error);
         if (active) {
-          setChats(stored);
+          setSessionUser(null);
           setIsPaid(false);
-          remoteChatsLoadedRef.current = false;
+          setChats(readStoredChats());
           setSupabaseReady(true);
         }
       }
@@ -1058,6 +1068,22 @@ function Index() {
       console.warn("Chat title generation failed silently", err);
     }
   };
+
+  if (!supabaseReady) {
+    return (
+      <div className="flex h-dvh w-full items-center justify-center bg-background text-foreground">
+        <div className="flex flex-col items-center gap-4">
+          <div className="flex h-14 w-14 items-center justify-center rounded-full border border-border/80 bg-muted/40 shadow-sm">
+            <div className="h-7 w-7 animate-spin rounded-full border-2 border-primary/30 border-t-primary" />
+          </div>
+          <div className="text-center">
+            <p className="text-sm font-medium tracking-[0.14em] text-foreground/70 uppercase">Loading</p>
+            <p className="mt-1 text-sm text-muted-foreground">Initializing your session…</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
